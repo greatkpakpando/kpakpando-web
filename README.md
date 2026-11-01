@@ -17,7 +17,7 @@ The application is intentionally small: seven content pages, a shared layout, a 
 | ESLint 9 + eslint-config-next | Next.js, React and TypeScript lint checks                                            |
 | pnpm 10.25.0                  | Pinned package manager; `pnpm-lock.yaml` is the dependency lockfile                  |
 
-`package.json` declares dependency versions/ranges. The lockfile records exact resolved versions. The package is private and named `kpakpando-foundation-web`; it is not intended for publishing to npm.
+`package.json` declares dependency versions/ranges. The lockfile records exact resolved versions. The package is private and named `kpakpando-web`; it is not intended for publishing to npm. Keep this name aligned with the Cloudflare Worker name because automatic deployment setup derives its self-reference service name from the project identity.
 
 ## Requirements and local setup
 
@@ -231,6 +231,8 @@ The last recorded production dependency audit was clear. The full development-to
 ### Cloudflare Workers / OpenNext
 
 The Cloudflare deployment uses OpenNext. Keep the root `next.config.ts` committed so adapter setup does not stop at the “Missing required next.config file” prompt. This file uses Next.js defaults and does not import packages that are absent from the application dependencies. After pulling this fix, retry the existing Cloudflare deployment. Cloudflare-specific adapter, Worker bindings and account settings are managed by that deployment setup; the repository does not currently contain a Wrangler or OpenNext configuration.
+
+The current deployment targets the Worker **`kpakpando-web`**. The package name is aligned to that exact name so automatically generated `WORKER_SELF_REFERENCE` bindings do not target the nonexistent `kpakpando-foundation-web` service. If a Wrangler configuration is introduced later, both its `name` and the `service` for `WORKER_SELF_REFERENCE` must be `kpakpando-web`. Keep `WORKER_SELF_REFERENCE` itself as the binding name. A CLI `--name` override changes the deployment target but does not automatically rewrite service-binding destinations. If a build cache retains an older generated configuration, clear that deployment cache and retry from the updated commit.
 
 The local Next production build verifies application compilation, but does not upload a Worker or prove that Cloudflare account configuration is valid. If a later deployment step fails, inspect its new error separately. See the [OpenNext setup guide](https://opennext.js.org/cloudflare/get-started) for explicit adapter configuration when needed.
 
