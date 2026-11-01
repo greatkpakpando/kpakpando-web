@@ -211,7 +211,7 @@ Automated accessibility checks supplement, rather than replace, keyboard, screen
 - `.gitignore`: generated artifacts, dependencies, local environment files and debug logs.
 - `AGENTS.md` / `CLAUDE.md`: repository instructions for coding assistants. Read the bundled `node_modules/next/dist/docs/` guides before Next-specific code changes as instructed there.
 
-There is no custom Next configuration after cleanup; Next.js defaults are used. Do not add infrastructure or new dependencies for ordinary content or CSS changes. For dependency updates, use pnpm, review the lockfile, then rerun lint, TypeScript and the production build.
+`next.config.ts` intentionally exports the default configuration. Keep this file: the OpenNext Cloudflare adapter requires a Next configuration file even when no custom settings are needed. Removing it causes an interactive setup prompt that fails in unattended CI. Do not add infrastructure or new dependencies for ordinary content or CSS changes. For dependency updates, use pnpm, review the lockfile, then rerun lint, TypeScript and the production build.
 
 ## Verification
 
@@ -227,6 +227,14 @@ Recorded implementation checks are detailed in [docs/validation.md](docs/validat
 The last recorded production dependency audit was clear. The full development-tool audit still reported moderate/high advisories, documented in the validation report. Audit results change over time; rerun them before release. Next.js and its matching ESLint configuration were upgraded from 16.3.1 to 16.4.3 for verified dependency fixes.
 
 ## Deployment
+
+### Cloudflare Workers / OpenNext
+
+The Cloudflare deployment uses OpenNext. Keep the root `next.config.ts` committed so adapter setup does not stop at the “Missing required next.config file” prompt. This file uses Next.js defaults and does not import packages that are absent from the application dependencies. After pulling this fix, retry the existing Cloudflare deployment. Cloudflare-specific adapter, Worker bindings and account settings are managed by that deployment setup; the repository does not currently contain a Wrangler or OpenNext configuration.
+
+The local Next production build verifies application compilation, but does not upload a Worker or prove that Cloudflare account configuration is valid. If a later deployment step fails, inspect its new error separately. See the [OpenNext setup guide](https://opennext.js.org/cloudflare/get-started) for explicit adapter configuration when needed.
+
+### Standard Node.js hosting
 
 Use a host supporting Node.js and Next.js image optimization. Install with the pinned package manager, set `NEXT_PUBLIC_SITE_URL`, then build and start:
 
@@ -255,6 +263,6 @@ Further documentation:
 
 ## Cleanup record
 
-Removed unused create-next-app SVGs (`next.svg`, `vercel.svg`, `file.svg`, `globe.svg`, `window.svg`), the obsolete admin route, an empty starter Next configuration, and 38 obsolete hero rules/selector branches. Unused markup hooks were removed and the old serif token was consolidated into the active Roboto token. The generic starter package name was replaced with the foundation package name.
+Removed unused create-next-app SVGs (`next.svg`, `vercel.svg`, `file.svg`, `globe.svg`, `window.svg`), the obsolete admin route, and 38 obsolete hero rules/selector branches. The empty Next configuration was initially removed, then restored because the OpenNext Cloudflare deployment requires it. Unused markup hooks were removed and the old serif token was consolidated into the active Roboto token. The generic starter package name was replaced with the foundation package name.
 
 Original client materials, the active components, essential framework/tooling dependencies, repository instructions and required licensed font/map assets are retained. No application dependencies were added for this cleanup.
