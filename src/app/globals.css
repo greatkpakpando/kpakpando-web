@@ -10,7 +10,7 @@
   --ink: #292421;
   --muted: #6c6660;
   --border: #e5e0d7;
-  --sans: var(--font-roboto), Arial, sans-serif;
+  --sans: var(--font-satoshi), Arial, sans-serif;
 }
 @theme inline {
   --color-background: var(--cream);
@@ -133,10 +133,20 @@ p {
     background 0.2s,
     transform 0.2s;
 }
-.button > span {
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 1;
+.arrow-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  color: #171717;
+}
+.arrow-icon-left {
+  transform: rotate(180deg);
+}
+.arrow-icon-down {
+  transform: rotate(90deg);
+}
+.button-red .arrow-icon {
+  color: inherit;
 }
 .button:hover {
   transform: translateY(-2px);
@@ -167,9 +177,6 @@ p {
 .text-link:hover {
   color: var(--red);
   border-color: var(--red);
-}
-.text-link > span {
-  font-size: 19px;
 }
 .skip-link {
   position: fixed;
@@ -708,9 +715,8 @@ p {
 .contact-cards a:hover {
   color: var(--red);
 }
-.contact-cards a > span {
+.contact-cards a > .arrow-icon {
   margin-left: 15px;
-  color: var(--red);
 }
 .contact-cards p {
   font-size: 15px;
@@ -770,7 +776,7 @@ p {
 .gallery-image:hover img {
   transform: scale(1.04);
 }
-.gallery-image > span {
+.gallery-image > .gallery-enlarge-icon {
   position: absolute;
   bottom: 15px;
   right: 15px;
@@ -1351,7 +1357,7 @@ p {
   }
 }
 
-/* Roboto brings one consistent typographic voice to the whole foundation. */
+/* Locally hosted Satoshi provides the site's consistent typographic voice. */
 h1,
 h2,
 h3 {

@@ -5,11 +5,11 @@ import { FoundationFooter } from "@/components/layout/FoundationFooter";
 import { foundation } from "@/data/foundation";
 import "./globals.css";
 
-const roboto = localFont({
-  src: "./fonts/Roboto-Variable.ttf",
-  variable: "--font-roboto",
+const satoshi = localFont({
+  src: "./fonts/Satoshi-Variable.woff2",
+  variable: "--font-satoshi",
   display: "swap",
-  weight: "100 900",
+  weight: "300 900",
 });
 
 const description =
@@ -47,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={roboto.variable}>
+    <html lang="en" className={satoshi.variable}>
       <body>
         <a href="#main-content" className="skip-link">
           Skip to content

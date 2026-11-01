@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { navigation } from "@/data/foundation";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 export function FoundationHeader() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -82,7 +83,7 @@ export function FoundationHeader() {
               className="button button-red nav-contact"
               aria-current={pathname === "/contact" ? "page" : undefined}
             >
-              Get in touch <span aria-hidden="true">↗</span>
+              Get in touch <ArrowIcon />
             </Link>
           </nav>
         </div>

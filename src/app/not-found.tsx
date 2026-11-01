@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 export default function NotFound() {
   return (
     <section className="section">
@@ -11,7 +12,7 @@ export default function NotFound() {
         </h1>
         <p>The page you are looking for could not be found.</p>
         <Link className="button button-red" href="/">
-          Back to home <span aria-hidden="true">↗</span>
+          Back to home <ArrowIcon />
         </Link>
       </div>
     </section>

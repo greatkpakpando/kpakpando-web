@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { photo } from "@/data/foundation";
 import { SunIcon } from "@/components/ui/SunIcon";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 
 const moments = [
   { file: "17.41.04 (1)", alt: "A foundation-supported farmer tending maize" },
@@ -48,7 +49,7 @@ export function NigeriaCollage() {
           <span>Connected by compassion.</span>
         </div>
         <span className="map-caption-arrow" aria-hidden="true">
-          ↗
+          <ArrowIcon />
         </span>
       </figcaption>
       <span className="map-coordinate" aria-hidden="true">

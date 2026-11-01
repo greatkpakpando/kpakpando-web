@@ -13,7 +13,7 @@ The application is intentionally small: seven content pages, a shared layout, a 
 | TypeScript                    | Strictly checked application code; imports use the `@/*` alias for `src/*`           |
 | Tailwind CSS 4                | Existing CSS toolchain and base styles, integrated through PostCSS                   |
 | Custom CSS                    | Brand variables, component styling, layouts and responsive behavior in `globals.css` |
-| Roboto variable               | Locally hosted site-wide typography through `next/font/local`                        |
+| Satoshi variable              | Locally hosted site-wide typography through `next/font/local`                        |
 | ESLint 9 + eslint-config-next | Next.js, React and TypeScript lint checks                                            |
 | pnpm 10.25.0                  | Pinned package manager; `pnpm-lock.yaml` is the dependency lockfile                  |
 
@@ -82,8 +82,8 @@ src/
     robots.ts                  Generated robots.txt
     sitemap.ts                 Generated sitemap.xml
     fonts/
-      Roboto-Variable.ttf      Locally hosted variable font
-      OFL.txt                  Font license; retain with the font
+      Satoshi-Variable.woff2      Locally hosted variable font
+      FFL.txt                  Font license; retain with the font
   components/
     layout/
       FoundationHeader.tsx     Branding, active links and responsive navigation
@@ -94,6 +94,7 @@ src/
       Gallery.tsx              Category filtering and photograph enlargement
     ui/
       SunIcon.tsx              Shared decorative SVG sun; no icon dependency
+      ArrowIcon.tsx            Slim SVG arrows, with right/left/down directions
   data/
     foundation.ts              Foundation details, navigation, work and gallery data
 public/
@@ -173,9 +174,9 @@ The SVG sun and the message “Rooted in love. Built on the belief that everyone
 | `--ink`       | `#292421`, primary text                                           |
 | `--muted`     | `#6c6660`, supporting text                                        |
 | `--border`    | `#e5e0d7`, subtle divisions                                       |
-| `--sans`      | Locally loaded Roboto with Arial/sans-serif fallback              |
+| `--sans`      | Locally loaded Satoshi with Arial/sans-serif fallback             |
 
-Roboto is loaded in `layout.tsx` with a CSS variable, variable weights 100-900 and `display: swap`. Both headings and body text use it. The font is served from this application, so visitors do not need to contact Google Fonts. Keep `src/app/fonts/OFL.txt` when retaining or redistributing the font.
+Satoshi is loaded in `layout.tsx` with a CSS variable, variable weights 300-900 and `display: swap`. Both headings and body text use it. The original WOFF2 is served from this application, so visitors do not need to contact Fontshare. Keep `src/app/fonts/FFL.txt` with the font and follow its licensing terms.
 
 Responsive rules cover small phones through large desktops. Navigation changes to a menu up to 960px; primary content layouts change around 760px, with additional adjustments around 1100px, 440px and 360px. Headlines use fluid sizing. Reduced-motion preferences disable smooth scrolling and visual transitions. The earlier 1px increase to small text sizes is retained.
 
@@ -186,7 +187,7 @@ For the hero, edit the `.hero-nigeria`, `.nigeria-art`, `.nigeria-collage` and `
 - `public/assets/logo.jpeg` is the official seal and is used intact for branding and metadata.
 - Original foundation photographs illustrate education, farming support and youth outreach. The supplied reference `hero.png` informs the layout but is not displayed as foundation content.
 - `nigeria-mask.svg` is a code-native vector mask derived from the [Nigeria GeoJSON boundary](https://github.com/johan/world.geo.json/blob/master/countries/NGA.geo.json).
-- Roboto comes from the [official Google Fonts repository](https://github.com/google/fonts/tree/main/ofl/roboto) and uses the included SIL Open Font License.
+- Satoshi comes from [Fontshare](https://www.fontshare.com/fonts/satoshi). Its ITF Free Font License is preserved in `src/app/fonts/FFL.txt`; the original WOFF2 is used without modification.
 - Original videos remain available as source material. Several need orientation correction; transcripts, captions and editorial review are required before publication. There is no background-video autoplay.
 - Former-site screenshots and the historical DOCX are reference materials, not website section images. Original client assets have not been deleted during cleanup.
 
@@ -300,6 +301,6 @@ Further documentation:
 
 ## Cleanup record
 
-Removed unused create-next-app SVGs (`next.svg`, `vercel.svg`, `file.svg`, `globe.svg`, `window.svg`), the obsolete admin route, and 38 obsolete hero rules/selector branches. The empty Next configuration was initially removed, then restored because the OpenNext Cloudflare deployment requires it. Unused markup hooks were removed and the old serif token was consolidated into the active Roboto token. The generic starter package name was replaced with the foundation package name.
+Removed unused create-next-app SVGs (`next.svg`, `vercel.svg`, `file.svg`, `globe.svg`, `window.svg`), the obsolete admin route, and 38 obsolete hero rules/selector branches. The empty Next configuration was initially removed, then restored because the OpenNext Cloudflare deployment requires it. Unused markup hooks were removed and the old serif token was consolidated into the active Satoshi token. The generic starter package name was replaced with the foundation package name.
 
 Original client materials, the active components, essential framework/tooling dependencies, repository instructions and required licensed font/map assets are retained. No application dependencies were added for this cleanup.

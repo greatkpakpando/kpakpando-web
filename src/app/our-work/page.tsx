@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { programs } from "@/data/foundation";
 import { Arrow, ConnectSection, PageIntro } from "@/components/sections/Shared";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 export const metadata: Metadata = {
   title: "Our work",
   description:
@@ -19,7 +20,7 @@ export default function WorkPage() {
       <div className="container work-jumps" aria-label="Areas of work">
         {programs.map((p) => (
           <a key={p.id} href={`#${p.id}`}>
-            {p.category} <span aria-hidden="true">↓</span>
+            {p.category} <ArrowIcon direction="down" />
           </a>
         ))}
       </div>

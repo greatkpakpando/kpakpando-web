@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { galleryPhotos } from "@/data/foundation";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 const categories = [
   "All photographs",
   "Education",
@@ -66,7 +67,9 @@ export function Gallery() {
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1000px) 50vw, 33vw"
                   />
-                  <span aria-hidden="true">↗</span>
+                  <span className="gallery-enlarge-icon" aria-hidden="true">
+                    <ArrowIcon />
+                  </span>
                 </button>
                 <figcaption>
                   <span>{p.category}</span>
@@ -106,11 +109,11 @@ export function Gallery() {
         </div>
         <div className="lightbox-bottom">
           <button onClick={() => move(-1)} aria-label="Previous photograph">
-            ←
+            <ArrowIcon direction="left" />
           </button>
           <p>{current.title}</p>
           <button onClick={() => move(1)} aria-label="Next photograph">
-            →
+            <ArrowIcon />
           </button>
         </div>
       </dialog>

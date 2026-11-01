@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { foundation, navigation } from "@/data/foundation";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 export function FoundationFooter() {
   return (
     <footer className="site-footer">
@@ -33,7 +34,9 @@ export function FoundationFooter() {
         </div>
         <div>
           <h2>Connect with us</h2>
-          <Link href="/contact">Contact the foundation ↗</Link>
+          <Link href="/contact">
+            Contact the foundation <ArrowIcon />
+          </Link>
           <Link href="/widows-rights">Widows’ dignity & rights</Link>
           <a className="footer-email" href={`mailto:${foundation.email}`}>
             {foundation.email}

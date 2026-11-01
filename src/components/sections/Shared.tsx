@@ -1,7 +1,6 @@
 import Link from "next/link";
-export function Arrow() {
-  return <span aria-hidden="true">↗</span>;
-}
+import { ArrowIcon as Arrow } from "@/components/ui/ArrowIcon";
+export { Arrow };
 export function PageIntro({
   eyebrow,
   title,

@@ -75,3 +75,7 @@ The 17.46.58 series duplicates earlier media or captures social pages; signature
 Video metadata and representative frames were inspected using Chrome. Five files are 480 × 848 portrait containers, several with sideways footage; 17.46.19 is 848 × 480 landscape and shows a school drug-awareness speaker. Durations in filename order: 25.75, 35.46, 58.86, 56.10, 81.97 and 34.23 seconds. Audio was not transcribed and full clips were not editorially reviewed. Videos remain unpublished pending orientation correction and captions.
 
 Palette verification: System.Drawing pixel sampling of the supplied JPEG produced mean red RGB (236,14,27), hex #ec0e1b, and golden yellow RGB (234,181,9), hex #eab509, among saturated red/yellow pixels. JPEG shading means these are representative palette values, not flat vector brand specifications. Accessible action red #b91b2a is a darker supporting tone.
+
+## Current typography and arrow icons
+
+The active font is Satoshi variable (300?900), downloaded directly from the official Fontshare Satoshi package and hosted locally as src/app/fonts/Satoshi-Variable.woff2. The package license is preserved as src/app/fonts/FFL.txt. The original WOFF2 is unchanged. The superseded Roboto font and its license were removed once no longer referenced. All directional text glyphs in the interface have been replaced with the shared ArrowIcon SVG component; no remote icon API or additional icon package is required.

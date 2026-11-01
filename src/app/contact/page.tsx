@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { foundation } from "@/data/foundation";
 import { PageIntro } from "@/components/sections/Shared";
+import { ArrowIcon } from "@/components/ui/ArrowIcon";
 export const metadata: Metadata = {
   title: "Contact",
   description:
@@ -43,7 +44,7 @@ export default function ContactPage() {
               <span>01 / WRITE TO US</span>
               <h3>Email the foundation</h3>
               <a href={`mailto:${foundation.email}`}>
-                {foundation.email} <span aria-hidden="true">↗</span>
+                {foundation.email} <ArrowIcon />
               </a>
             </article>
             <article>
@@ -51,7 +52,7 @@ export default function ContactPage() {
               <h3>Speak with us</h3>
               {foundation.phones.map((phone) => (
                 <a href={`tel:${phone.replaceAll(" ", "")}`} key={phone}>
-                  {phone} <span aria-hidden="true">↗</span>
+                  {phone} <ArrowIcon />
                 </a>
               ))}
             </article>
