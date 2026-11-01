@@ -17,11 +17,11 @@ The application is intentionally small: seven content pages, a shared layout, a 
 | ESLint 9 + eslint-config-next | Next.js, React and TypeScript lint checks                                            |
 | pnpm 10.25.0                  | Pinned package manager; `pnpm-lock.yaml` is the dependency lockfile                  |
 
-`package.json` declares dependency versions/ranges. The lockfile records exact resolved versions. The package is private and named `kpakpando-web`; it is not intended for publishing to npm. Keep this name aligned with the Cloudflare Worker name because automatic deployment setup derives its self-reference service name from the project identity.
+`package.json` declares dependency versions/ranges. The lockfile records exact resolved versions. The private package and explicit Cloudflare Worker are named `kpakpando-web`. Deployment uses checked-in configuration and pinned tools rather than automatic setup. `@opennextjs/cloudflare` 1.20.15 is an application dependency and Wrangler 4.156.0 is a development/deployment dependency.
 
 ## Requirements and local setup
 
-Next.js requires Node.js **20.9.0 or later**. Development was checked with Node.js 22.21.1 on Windows. Use the pinned pnpm version for reproducible installation.
+Use Node.js **22 or later** for the pinned Wrangler version. `.node-version` pins the verified local version, 22.21.1. Use pnpm 10.25.0 for reproducible installation. Cloudflare/OpenNext production bundles should be built on Linux, as Cloudflare Workers Builds does; OpenNext does not fully support Windows.
 
 ```sh
 pnpm install --frozen-lockfile
@@ -62,7 +62,7 @@ Replace the example with the actual, verified origin, including `https://` in pr
 
 This is the only application environment setting. It controls the metadata base URL, sitemap entries and the sitemap URL in robots.txt. When unset, metadata uses localhost and the sitemap deliberately contains no unverified URLs. Set it **before building**: the relevant routes are statically generated. Changing the deployment origin requires a rebuild.
 
-Environment files are ignored by the current `.gitignore`; provision the setting separately in each deployment environment. No API keys or external services are required to render the website.
+Local environment files are ignored; `.env.example` is tracked as a template. Provision settings separately in each deployment environment. Local Next.js rendering needs no API credentials. Deploying a Worker requires Cloudflare authorization, and the `IMAGES` binding retains Cloudflare image optimization.
 
 ## Repository structure
 
@@ -211,7 +211,7 @@ Automated accessibility checks supplement, rather than replace, keyboard, screen
 - `.gitignore`: generated artifacts, dependencies, local environment files and debug logs.
 - `AGENTS.md` / `CLAUDE.md`: repository instructions for coding assistants. Read the bundled `node_modules/next/dist/docs/` guides before Next-specific code changes as instructed there.
 
-`next.config.ts` intentionally exports the default configuration. Keep this file: the OpenNext Cloudflare adapter requires a Next configuration file even when no custom settings are needed. Removing it causes an interactive setup prompt that fails in unattended CI. Do not add infrastructure or new dependencies for ordinary content or CSS changes. For dependency updates, use pnpm, review the lockfile, then rerun lint, TypeScript and the production build.
+`next.config.ts` keeps Next's normal rendering defaults and initializes local Cloudflare bindings only during the development-server phase. This explicit guard prevents Workers emulation from starting during production builds and type checking. Keep this file together with `open-next.config.ts` and `wrangler.jsonc`; deployment must not depend on interactive configuration prompts. For dependency updates, use pnpm, review the lockfile, then rerun lint, TypeScript and the relevant production build.
 
 ## Verification
 
@@ -230,11 +230,46 @@ The last recorded production dependency audit was clear. The full development-to
 
 ### Cloudflare Workers / OpenNext
 
-The Cloudflare deployment uses OpenNext. Keep the root `next.config.ts` committed so adapter setup does not stop at the “Missing required next.config file” prompt. This file uses Next.js defaults and does not import packages that are absent from the application dependencies. After pulling this fix, retry the existing Cloudflare deployment. Cloudflare-specific adapter, Worker bindings and account settings are managed by that deployment setup; the repository does not currently contain a Wrangler or OpenNext configuration.
+Deployment is explicitly configured in the repository:
 
-The current deployment targets the Worker **`kpakpando-web`**. The package name is aligned to that exact name so automatically generated `WORKER_SELF_REFERENCE` bindings do not target the nonexistent `kpakpando-foundation-web` service. If a Wrangler configuration is introduced later, both its `name` and the `service` for `WORKER_SELF_REFERENCE` must be `kpakpando-web`. Keep `WORKER_SELF_REFERENCE` itself as the binding name. A CLI `--name` override changes the deployment target but does not automatically rewrite service-binding destinations. If a build cache retains an older generated configuration, clear that deployment cache and retry from the updated commit.
+| File                              | Purpose                                                                                                                         |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `wrangler.jsonc`                  | Worker `kpakpando-web`, `.open-next/worker.js` entry, static asset directory, Node compatibility and `ASSETS`/`IMAGES` bindings |
+| `open-next.config.ts`             | Read-only static-asset cache for prerendered routes; no revalidation queue, tag store or cache-purge service                    |
+| `next.config.ts`                  | Normal Next defaults plus development-only binding initialization                                                               |
+| `package.json` / `pnpm-lock.yaml` | Pinned adapter/CLI and reproducible dependency resolution                                                                       |
+| `.node-version`                   | Node 22.21.1 for the Wrangler toolchain                                                                                         |
+| `public/_headers`                 | Immutable caching for fingerprinted Next static assets                                                                          |
 
-The local Next production build verifies application compilation, but does not upload a Worker or prove that Cloudflare account configuration is valid. If a later deployment step fails, inspect its new error separately. See the [OpenNext setup guide](https://opennext.js.org/cloudflare/get-started) for explicit adapter configuration when needed.
+**Why there is no `WORKER_SELF_REFERENCE`:** the application's routes are statically prerendered and do not use ISR, on-demand revalidation, Server Actions or background revalidation queues. The installed OpenNext adapter uses self-reference in revalidation paths, not when fetching the site's local images. The configuration explicitly sets `queue`, `tagCache` and `cachePurge` to `dummy`, and uses the static-assets incremental cache with interception enabled. Images use the retained `ASSETS` and `IMAGES` bindings. No `services` entry is configured, so deployment cannot refer to the nonexistent `kpakpando-foundation-web` service. Do not reintroduce generated self-reference bindings for this static configuration. If revalidation is added later, revisit the cache design and point any required self-reference at the actual Worker name.
+
+For Cloudflare Workers Builds, use these settings instead of framework auto-setup or an unpinned `npx` deployment command:
+
+| Setting           | Value                                                               |
+| ----------------- | ------------------------------------------------------------------- |
+| Install           | `pnpm install --frozen-lockfile` (include development dependencies) |
+| Build command     | `pnpm run build:cloudflare`                                         |
+| Deploy command    | `pnpm run deploy:cloudflare`                                        |
+| Worker name       | `kpakpando-web`                                                     |
+| Build environment | `NEXT_PUBLIC_SITE_URL=https://your-verified-domain`                 |
+
+`build:cloudflare` runs the regular Next production build and then creates the Worker bundle in `.open-next/`. `deploy:cloudflare` deploys that already-built bundle. Set the public origin in the build environment, not only in Worker runtime variables. Remove any old deployment command or cached configuration referencing `kpakpando-foundation-web` and retry the updated commit. `.open-next/`, `.wrangler/`, local logs and local binding values are ignored by Git; generated files are also excluded from lint and TypeScript source checks.
+
+For a complete build and deployment from an authenticated terminal:
+
+```sh
+pnpm deploy
+```
+
+For local Workers emulation after building:
+
+```sh
+pnpm preview
+```
+
+Both convenience commands run the adapter build first. `pnpm dev` remains the regular Next development server. No R2 buckets, queues, databases or Durable Objects need provisioning for this static configuration. Cloudflare account authorization and access to the Images binding remain deployment prerequisites. No credentials are committed, and local checks do not establish that a remote deployment has succeeded.
+
+References: [OpenNext setup](https://opennext.js.org/cloudflare/get-started), [SSG cache guidance](https://opennext.js.org/cloudflare/caching), [image optimization](https://opennext.js.org/cloudflare/howtos/image). See [deployment verification](docs/cloudflare-deployment.md) for the performed checks and local Windows limitation.
 
 ### Standard Node.js hosting
 
